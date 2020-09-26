@@ -10,6 +10,10 @@ public class Hero {
     private String name;
     private Sex sex;
 
+    //max stats
+    private int maxmp;
+    private int maxhp;
+
     // physical stats
     private int strength;
     private int stamina;
@@ -26,9 +30,10 @@ public class Hero {
 
     // derived stats
     private float movementSpeed;
-    private float mana;
-    private float health;
+    private int mana;
+    private int health;
     private int coins;
+
     private Buff buffs = null;
 
     public Hero(String name, Sex sex, int strength, int stamina, int dexterity, int intelligence, int wisdom, int charisma) {
@@ -50,53 +55,65 @@ public class Hero {
         this.baseBlock = dexterity * 0.1f;
         this.movementSpeed = stamina * 0.1f;
 
-        this.health = strength * 0.5f + stamina * 0.2f + dexterity * 0.1f;
-        this.mana = intelligence * 0.5f + wisdom + stamina * 0.1f;
+        this.health = strength + stamina + dexterity;
+        this.mana = intelligence + wisdom + stamina;
 
-        this.coins = 0;
+        this.coins = 10;
+        this.maxhp = 100;
+        this.maxmp = 100;
     }
 
     public void printInfo() {
-        System.out.println(C_BLACK_BOLD + C_RED_BACKGROUND + "===== HERO STATS =====" + C_RESET +
-                "\nname: " + name +
-                "\nsex: " + sex.name() +
-                "\nhealth: " + health +
-                "\nmana: " + mana +
-                "\n" + C_BLACK_BOLD + C_RED_BACKGROUND + "====STATS====" + C_RESET +
-                "\nstrength: " + strength +
-                "\nstamina: " + stamina +
-                "\ndexterity: " + dexterity +
-                "\nintelligence: " + intelligence +
-                "\nwisdom: " + wisdom +
-                "\ncharisma: " + charisma +
-                "\n" + C_BLACK_BOLD + C_RED_BACKGROUND + "====FIGHTS====" + C_RESET +
-                "\nbaseDamage: " + baseDamage +
-                "\nbaseBlock: " + baseBlock +
-                "\ncoins: " + coins +
-                "\nmovementSpeed: " + movementSpeed +
-                "\nbuffs: " + buffs +
-                "\n"
+        System.out.println(
+                "\n>>>>>>>>>|>>>>>>>>20]>>>>>>>>]>>>>>>>40]>>>>>>>>50]>>>>>>>>60]>>>>>>>>70]>>>>>>>>80>>>>>>>>90]>>>>>>>100]>>>>>>>110]>>>>>>>120]\n" + C_CYAN +
+                        "+_______________________+" +
+                        "\n|------PLAYER INFO------|" +
+                        "\n name\t: " + name +
+                        "\n sex\t: " + sex.name() +
+                        "\n health\t: " + health + "/" + maxhp +
+                        "\n mana\t: " + mana + "/" + maxmp +
+                        "\n|---------STATS---------|" +
+                        "\n strength\t\t: " + strength +
+                        "\n stamina\t\t: " + stamina +
+                        "\n dexterity\t\t: " + dexterity +
+                        "\n intelligence\t: " + intelligence +
+                        "\n wisdom\t\t\t: " + wisdom +
+                        "\n charisma\t\t: " + charisma +
+                        "\n|-----FIGHTS STATS------|" +
+                        "\n baseDamage\t\t: " + baseDamage +
+                        "\n baseBlock\t\t: " + baseBlock +
+                        "\n coins\t\t\t: " + coins +
+                        "\n movementSpeed\t: " + movementSpeed +
+                        "\n buffs\t\t\t: " + buffs +
+                        "\n Enemies killed\t: " + Enemy.enemiesCount +
+                        "\n+-----------------------+" + C_RESET
         );
     }
 
     public void applyDamage(byte amount) {
-        System.out.println("Dealing " + amount + " damage to " + name);
+
+        System.out.println("\nDealing " + C_RED + amount + C_RESET + " damage to " + C_CYAN_BACKGROUND + C_BLACK_BOLD + name + C_RESET);
         health -= amount;
 
         if (health < 0) {
             health = 0;
 
-            System.out.println("Enemy: " + name + " is dead!");
+            System.out.println("Hero: " + name + " is dead!");
         }
     }
 
     public void attack(char attackType, Enemy enemy) {
-        //attackType = 'S'; // Sword, Axe, Fire, Ice
+
         float attackValue = 1.5f;
         float hitChance = 2.5f;
-        float manaCost = 0.1f;
+        float manaCost = 0;
 
         switch (Character.toUpperCase(attackType)) {
+
+            case 'Q':
+                System.out.println("\nPLAYER: " + name + " LEFT THE GAME");
+                System.exit(0);
+
             case 'S':
                 attackValue = baseDamage * 2;
                 hitChance = dexterity * 2;
@@ -106,28 +123,64 @@ public class Hero {
                 hitChance = dexterity * 1;
                 break;
             case 'F':
-                attackValue = baseDamage * 10;
-                hitChance = intelligence * 5;
-                manaCost = 25;
+                if (mana > manaCost) {
+                    attackValue = baseDamage * 10;
+                    hitChance = intelligence * 5;
+                    manaCost = 25;
+                } else {
+                    System.out.println("Not enough mana to attack");
+                }
                 break;
-
             case 'I':
-                attackValue = baseDamage * 2;
-                hitChance = intelligence * 4;
-                manaCost = 10;
+                if (mana > manaCost) {
+                    attackValue = baseDamage * 2;
+                    hitChance = intelligence * 4;
+                    manaCost = 10;
+                } else {
+                    System.out.println("Not enough mana to attack");
+                }
                 break;
         }
 
         mana -= manaCost;
         enemy.applyDamage((byte) attackValue, hitChance);
+
     }
+
+    public void runAway(int coins) {
+        int coinsCost = 5;
+        this.coins -= coinsCost;
+    }
+
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public void receiveCoins(int coins, Enemy enemy) {
-        this.coins = coins + enemy.getCoins();
+    public void receiveCoins(Enemy enemy) {
+        this.coins += enemy.getCoins();
 
+    }
+
+    public float getHealth() {
+        return health;
+    }
+
+    public float getMana() {
+        return mana;
+    }
+
+    public void restoreStats() {
+        this.health = 100;
+        this.mana = 100;
+        this.coins = coins - 20;
+    }
+
+    public void getStats() {
+        System.out.println("\n" + C_CYAN_BACKGROUND + C_BLACK_BOLD + "----" + name + "-----" + C_RESET + C_CYAN +
+                "\n|---STATS---|" +
+                "\n| HP\t: " + health +
+                "|\n| MP\t: " + mana +
+                "|\n+-----------+" + C_RESET);
     }
 }

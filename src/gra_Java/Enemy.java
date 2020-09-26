@@ -1,11 +1,16 @@
 package gra_Java;
+
 import java.util.concurrent.ThreadLocalRandom;
+
 import static gra_Java.ConsoleUnits.*;
 
 
 public class Enemy {
 
     public static int enemiesCount = 0;
+    public static int enemiesCountStage2 = 0;
+    public static int enemiesCountStage3 = 0;
+
 
     String name = "unnamed_enemy";
     private byte health = 15;
@@ -29,7 +34,7 @@ public class Enemy {
         return health;
     }
 
-    public int getCoins(){
+    public int getCoins() {
         return coins;
     }
 
@@ -45,7 +50,11 @@ public class Enemy {
     }
 
     public void getInfo() {
-        System.out.println("Name: " + name + "\nHp: " + health + "\nCoins: " + coins);
+        System.out.println(C_RED_BACKGROUND + C_BLACK_BOLD + name + C_RESET + C_RED +
+                "\n|---STATS---|" +
+                "\n| HP\t: " + health +
+                "|\n| Coins\t: " + coins +
+                "|\n+-----------+" + C_RESET);
     }
 
     public void applyDamage(byte amount, float attackHitChance) {
@@ -55,21 +64,22 @@ public class Enemy {
 //        System.out.println("[DEBUG] random: " + random + " attackChance: " + attackHitChance);
 
         if (isHit) {
-            System.out.println("\nDealing " + C_RED + amount + C_RESET + " damage to " + name);
+            System.out.println("\nDealing " + C_RED + amount + C_RESET + " damage to " + C_RED_BACKGROUND + C_BLACK_BOLD + name + C_RESET);
             health -= amount;
 
             // przypadek gdy wrog zginal
-            if(health < 0) {
+            if (health < 0) {
                 health = 0;
 
-                isDead = true;
-                enemiesCount++;
 
-                System.out.println("\nEnemy: " + name + " is dead!");
+                enemiesCount++;
+                isDead = true;
+                System.out.println("\nEnemy: " + C_RED_BACKGROUND + C_BLACK_BOLD + name + C_RESET + " is dead!\n");
+                System.out.println("Already killed: " + C_CYAN + enemiesCount + C_RESET + " enemies!\n");
 
             }
         } else {
-            System.out.println("\nEnemy dodged this!");
+            System.out.println(C_RED_BACKGROUND + C_BLACK_BOLD + name + C_RESET + " dodged this!");
         }
     }
 
@@ -78,19 +88,19 @@ public class Enemy {
 
         switch (random) {
             case 0:
-                System.out.println("Bring it on!\n");
+                System.out.println("Bring it on!");
                 break;
             case 1:
-                System.out.println("I'll kill you!\n");
+                System.out.println("I'll kill you!");
                 break;
             case 2:
-                System.out.println("Don't mess with me!\n");
+                System.out.println("Don't mess with me!");
                 break;
             case 3:
-                System.out.println("I feel your blood!\n");
+                System.out.println("I feel your blood!");
                 break;
             default:
-                System.out.println("[ERROR] Taunt [" + random +"] does not exist");
+                System.out.println("[ERROR] Taunt [" + random + "] does not exist");
         }
     }
 
@@ -99,8 +109,14 @@ public class Enemy {
         return name;
     }
 
+    public void attackHero(byte amount, Hero hero) {
+        hero.applyDamage(amount);
+
+    }
+
     public void setName(String n) {
         name = n;
     }
+
 //    - metoda pozwalająca atakować bohatera
 }

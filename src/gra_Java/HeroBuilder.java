@@ -21,8 +21,11 @@ public class HeroBuilder {
 
     public Hero buildHero() {
 
-        String name = promptForString("Enter character name...: ");
-        String sexInput = promptForString("Enter character sex...: \n\t\t\t\t\t\t[M]ale\n\t\t\t\t\t\t[F]emale \n\t\t\t\t\t\t[O]ther...:");
+        String name = promptForString("\n" + C_GREEN_BOLD + "Enter character name" + C_RESET + "...: ");
+        String sexInput = promptForString("\n" + C_GREEN_BOLD + "Choose character sex:" + C_RESET
+                + C_BLUE_BOLD + "\n[MALE] " + C_RESET
+                + C_RED_BOLD + "[FEMALE]" + C_RESET + C_PURPLE + " [OTHER]"
+                + C_RESET + "...:");
         String sexSafeInput = sexInput.toLowerCase();
 
         Sex sex;
@@ -67,7 +70,7 @@ public class HeroBuilder {
 
         do {
             clearScreen();
-            System.out.println("\nSkill points left: " + skillPoints + "\n\n" +
+            System.out.println("\n" + C_BLACK_BOLD + "Skill points left: " + skillPoints + C_RESET + "\n\n" +
                     "[1] strength:     " + strength + "\n" +
                     "[2] stamina:      " + stamina + "\n" +
                     "[3] dexterity:    " + dexterity + "\n" +
@@ -76,12 +79,12 @@ public class HeroBuilder {
                     "[6] charisma:     " + charisma + "\n\n"
             );
             Boolean allStatFieldsSet =
-                            strength        > 0 &&
-                            stamina         > 0 &&
-                            dexterity       > 0 &&
-                            intelligence    > 0 &&
-                            wisdom          > 0 &&
-                            charisma        > 0;
+                    strength > 0 &&
+                            stamina > 0 &&
+                            dexterity > 0 &&
+                            intelligence > 0 &&
+                            wisdom > 0 &&
+                            charisma > 0;
 
             if (skillPoints == 0 && allStatFieldsSet) {
                 clearScreen();
@@ -89,7 +92,7 @@ public class HeroBuilder {
             } else {
 
 
-                int choice = promptForInt("Choose number of the skill and press Enter\n...: ");
+                int choice = promptForInt(C_GREEN_BOLD + "Choose number of the skill and press Enter" + C_RESET + "...: ");
                 switch (choice) {
                     case 1:
                         strength = readSkillValueFor("strength", strength);
@@ -123,14 +126,14 @@ public class HeroBuilder {
         int newSkillPointValue;
 
         do {
-            value = promptForInt("Enter " + fieldName + " points...: ");
+            value = promptForInt(C_GREEN_BOLD + "Enter " + fieldName + " points...: " + C_RESET);
             if (value < 0) {
-                System.out.println("New value has to be >= 0 !");
+                System.out.println(C_RED_BOLD + "New value has to be >= 0 !" + C_RESET);
             }
 
             newSkillPointValue = skillPoints - value + currentFieldValue;
             if (newSkillPointValue < 0) {
-                System.out.println("Not enough skill points!\nOnly " + skillPoints + " skill points left");
+                System.out.println(C_RED_BOLD + "Not enough skill points!\nOnly " + C_RED_BOLD + skillPoints + " skill points left" + C_RESET);
             }
         } while (value < 0 || newSkillPointValue < 0);
 
@@ -140,5 +143,5 @@ public class HeroBuilder {
     }
 
 
-    }
+}
 
